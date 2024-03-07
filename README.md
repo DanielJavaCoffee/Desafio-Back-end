@@ -1,8 +1,8 @@
-# Desafio Back-end PicPay
+# Desafio Back-end.
 
 ## Objetivo
 
-O desafio consiste em criar um sistema simplificado do PicPay, focando no fluxo de transferência de dinheiro entre dois tipos de usuários: comuns e lojistas. Ambos têm carteira com dinheiro e podem realizar transferências entre si.
+O desafio consiste em criar um sistema simplificado, focando no fluxo de transferência de dinheiro entre dois tipos de usuários: comuns e lojistas. Ambos têm carteira com dinheiro e podem realizar transferências entre si.
 
 ### Requisitos
 

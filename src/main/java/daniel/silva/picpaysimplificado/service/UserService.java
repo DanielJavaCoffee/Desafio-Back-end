@@ -2,6 +2,7 @@ package daniel.silva.picpaysimplificado.service;
 
 import daniel.silva.picpaysimplificado.dtos.user.UserCreateRecord;
 import daniel.silva.picpaysimplificado.entity.User;
+import daniel.silva.picpaysimplificado.exceptionUser.UserUniqueViolationException;
 import daniel.silva.picpaysimplificado.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -24,9 +25,8 @@ public class UserService {
             userRepository.save(user);
             return userCreateRecord;
         } catch (DataIntegrityViolationException exception){
-            throw  new RuntimeException("User já cadastrado com CPF ou Email já informado.");
+            throw  new UserUniqueViolationException("User já cadastrado com CPF ou Email já informado.");
         }
     }
-
 
 }

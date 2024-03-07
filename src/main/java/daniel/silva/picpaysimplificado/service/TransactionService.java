@@ -4,6 +4,7 @@ import daniel.silva.picpaysimplificado.dtos.transaction.TransactionCreateRecord;
 import daniel.silva.picpaysimplificado.entity.Transaction;
 import daniel.silva.picpaysimplificado.entity.User;
 import daniel.silva.picpaysimplificado.enuns.UserType;
+import daniel.silva.picpaysimplificado.exceptionUser.UserNotFoundException;
 import daniel.silva.picpaysimplificado.repository.TransactionRepository;
 import daniel.silva.picpaysimplificado.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,24 +26,24 @@ public class TransactionService {
     private final RestTemplate restTemplate;
 
     @Transactional
-    public TransactionCreateRecord createTransaction(TransactionCreateRecord transactionCreateRecord) throws Exception {
+    public TransactionCreateRecord createTransaction(TransactionCreateRecord transactionCreateRecord) throws RuntimeException {
         try {
-            Optional<User> userPayer = Optional.ofNullable(userRepository.findById(transactionCreateRecord.id_payer()).orElseThrow(() -> new Exception("User Payer não encontrado")));
-            Optional<User> userPayee = Optional.ofNullable(userRepository.findById(transactionCreateRecord.id_payee()).orElseThrow(() -> new Exception("User Payee não encontrado")));
+            Optional<User> userPayer = Optional.ofNullable(userRepository.findById(transactionCreateRecord.id_payer()).orElseThrow(() -> new UserNotFoundException("User Payer não encontrado")));
+            Optional<User> userPayee = Optional.ofNullable(userRepository.findById(transactionCreateRecord.id_payee()).orElseThrow(() -> new UserNotFoundException("User Payee não encontrado")));
 
             var user_payer = userPayer.get();
             var user_payee = userPayee.get();
 
             if (user_payer.getUserType().equals(UserType.MERCHANT)) {
-                throw new Exception("Pagador do tipo logista não pode fazer operações");
+                throw new RuntimeException("Pagador do tipo logista não pode fazer operações");
             }
             if (user_payer.getBalance().compareTo(transactionCreateRecord.value()) < 0) {
-                throw new Exception("O Valor da transação é maior que o saldo atual da conta.");
+                throw new RuntimeException("O Valor da transação é maior que o saldo atual da conta.");
             }
 
             boolean isAuthorize = authorizeTransaction();
             if (!isAuthorize){
-                throw new Exception("Transação não autorizada!");
+                throw new RuntimeException("Transação não autorizada!");
             }
 
             var transaction = new Transaction();
